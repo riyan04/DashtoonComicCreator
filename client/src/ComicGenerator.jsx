@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { toPng } from 'html-to-image';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -37,9 +37,10 @@ const ComicGenerator = () => {
         } catch (error) {
             console.error("Error generating comic:", error);
             alert("Error generating comic. Please try again.");
-        } finally {
-            setLoading(false);
-        }
+        } 
+        // finally {
+        //     setLoading(false);
+        // }
     };
     const generateComic = async () => {
         if (!comicText) {
@@ -94,19 +95,19 @@ const ComicGenerator = () => {
             const imageUrl = comicImages[0]; // Assuming you want to share the first image
 
             // Share on WhatsApp
-            if(platform === 'whatsapp'){
+            if (platform === 'whatsapp') {
 
                 window.open(`https://api.whatsapp.com/send?text=${imageUrl}`, '_blank');
             }
 
             // Share on Facebook
-            if(platform === 'facebook'){
+            if (platform === 'facebook') {
 
                 window.open(`https://www.facebook.com/sharer/sharer.php?u=${imageUrl}`, '_blank');
             }
 
             // Share on Instagram (Note: Direct sharing to Instagram has limitations)
-            if(platform === 'instagram'){
+            if (platform === 'instagram') {
 
                 window.open(`https://www.instagram.com/?url=${imageUrl}`, '_blank');
             }
@@ -114,6 +115,13 @@ const ComicGenerator = () => {
             alert("No comic images to share. Generate a comic first.");
         }
     };
+
+    useEffect(() => {
+        // Check if all 10 images are loaded
+        if (comicImages.length === 10) {
+            setLoading(false);
+        }
+    }, [comicImages]);
 
     return (
         <div>
@@ -167,21 +175,21 @@ const ComicGenerator = () => {
                                             onClick={() => handleShareClick('whatsapp')}
                                             className="flex-1 p-2 text-center ml-2 mr-2 bg-slate-400 hover:bg-gray-200"
                                         >
-                                            
+
                                             <FontAwesomeIcon icon={faWhatsapp} size="lg" />
                                         </button>
                                         <button
                                             onClick={() => handleShareClick('facebook')}
                                             className="flex-1 p-2 text-center ml-2 mr-2 bg-slate-400 hover:bg-gray-200"
                                         >
-                                            
+
                                             <FontAwesomeIcon icon={faFacebook} size="lg" />
                                         </button>
                                         <button
                                             onClick={() => handleShareClick('instagram')}
                                             className="flex-1 p-2 text-center ml-2 mr-2 bg-slate-400 hover:bg-gray-200"
                                         >
-                                            
+
                                             <FontAwesomeIcon icon={faInstagram} size="lg" />
                                         </button>
                                     </div>
@@ -196,7 +204,7 @@ const ComicGenerator = () => {
                     {loading && <p className="text-gray-600">Loading...</p>}
                     {comicImages.length === 10 && !loading && (
                         <div ref={elementRef} className="comic-output mt-4 p-4 grid grid-cols-4 grid-flow-row-dense gap-4 bg-[#000000]">
-                            
+
                             <img src={comicImages[0]} alt="Generated Comic 1" className="w-full h-full mb-2 col-span-2" />
                             <img src={comicImages[1]} alt="Generated Comic 2" className="w-full h-full mb-2 col-span-2" />
                             <img src={comicImages[2]} alt="Generated Comic 3" className="w-full h-full mb-2 col-span-3" />
@@ -208,7 +216,7 @@ const ComicGenerator = () => {
                             <img src={comicImages[8]} alt="Generated Comic 9" className="w-full h-full mb-2" />
                             <img src={comicImages[9]} alt="Generated Comic 10" className="w-full h-full mb-2 col-span-4" />
                         </div>
-                        
+
                     )}
                 </div>
             </div>
